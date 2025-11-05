@@ -3,11 +3,10 @@ package hello.core.order;
 import hello.core.discount.DiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
-import hello.core.member.MemoryMemberRepository;
 
 public class OrderServiceImpl implements OrderService{
 
-    private final MemberRepository memberRepository = new MemoryMemberRepository();
+    private final MemberRepository memberRepository;
     // private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
     // private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
     // OCP, DIP 같은 객체지향 설계 원칙(공부 필요)
@@ -17,9 +16,15 @@ public class OrderServiceImpl implements OrderService{
         => 추상에도 의존, 구체에도 의존하고 있음 => DIP 위반(추상에만 의존하도록 변경)!
         정액에서 정률로 변경했을 때, Impl의 소스코드도 함께 변경하고 있음 => OCP 위반!
     */
-    private DiscountPolicy discountPolicy;  // 추상에만 의존하도록 변경
+    private final DiscountPolicy discountPolicy;  // 추상에만 의존하도록 변경
     // 하지만 이대로 실행하면 NullPointException 발생
-    //
+    // 누군가 OrderServiceImpl에 DiscountPolicy의 구현 객체를 대신 생성해주고 주입해주어야 한다
+
+
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
