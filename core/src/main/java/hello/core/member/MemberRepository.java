@@ -2,7 +2,7 @@ package hello.core.member;
 
 public interface MemberRepository {
 
-    void save(Member member);
+  void save(Member member);
 
-    Member findById(long memberId);
+  Member findById(long memberId);
 }
